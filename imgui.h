@@ -1574,6 +1574,8 @@ enum ImGuiCol_
     ImGuiCol_ModalWindowDimBg,      // Darken/colorize entire screen behind a modal window, when one is active
     ImGuiCol_TitleBarBgTop,         // Background color of window title bar (top of gradient)
     ImGuiCol_TitleBarBgBot,         // Background color of window title bar (bottom of gradient)
+    ImGuiCol_TitleTextBgTop,        // Background color of window title bar text (top of gradient)
+    ImGuiCol_TitleTextBgBot,        // Background color of window title bar text (bottom of gradient)
     ImGuiCol_COUNT
 };
 

@@ -3187,6 +3187,8 @@ const char* ImGui::GetStyleColorName(ImGuiCol idx)
     case ImGuiCol_ModalWindowDimBg: return "ModalWindowDimBg";
     case ImGuiCol_TitleBarBgTop: return "TitleBarBgTop";
     case ImGuiCol_TitleBarBgBot: return "TitleBarBgBot";
+    case ImGuiCol_TitleTextBgTop: return "TitleTextBgTop";
+    case ImGuiCol_TitleTextBgBot: return "TitleTextBgBot";
     }
     IM_ASSERT(0);
     return "Unknown";
@@ -6056,6 +6058,24 @@ void ImGui::RenderWindowTitleBarContents(ImGuiWindow* window, const ImRect& titl
             clip_r.Max.x = ImMin(clip_r.Max.x, marker_pos.x - (int)(marker_size_x * 0.5f));
         }
     }
+
+    // Render a gradient background behind the title bar text
+    {
+        // Most of this is copied from window decoration rendering code.
+        ImVec2 pos = layout_r.Min;
+        const auto pos_max = layout_r.Max;
+        const auto& align = style.WindowTitleAlign;
+        // Align whole block. We should defer that to the better rendering function when we'll have support for individual line alignment.
+        if (align.x > 0.0f) pos.x = ImMax(pos.x, pos.x + (pos_max.x - pos.x - text_size.x) * align.x);
+        if (align.y > 0.0f) pos.y = ImMax(pos.y, pos.y + (pos_max.y - pos.y - text_size.y) * align.y);
+        ImVec2 pos_min = pos;
+        pos_min.y = layout_r.Min.y;
+
+        const auto top_color = GetColorU32(ImGuiCol_TitleTextBgTop);
+        const auto bot_color = GetColorU32(ImGuiCol_TitleTextBgBot);
+        window->DrawList->AddRectFilledMultiColor(pos_min, pos + text_size, top_color, top_color, bot_color, bot_color);
+    }
+
     //if (g.IO.KeyShift) window->DrawList->AddRect(layout_r.Min, layout_r.Max, IM_COL32(255, 128, 0, 255)); // [DEBUG]
     //if (g.IO.KeyCtrl) window->DrawList->AddRect(clip_r.Min, clip_r.Max, IM_COL32(255, 128, 0, 255)); // [DEBUG]
     RenderTextClipped(layout_r.Min, layout_r.Max, name, NULL, &text_size, style.WindowTitleAlign, &clip_r);
