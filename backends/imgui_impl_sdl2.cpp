@@ -286,7 +286,12 @@ bool ImGui_ImplSDL2_ProcessEvent(const SDL_Event* event)
     {
         case SDL_MOUSEMOTION:
         {
-            ImVec2 mouse_pos((float)event->motion.x, (float)event->motion.y);
+            float scale_x = 1.0f;
+            float scale_y = 1.0f;
+            if (bd->Renderer) {
+                SDL_RenderGetScale(bd->Renderer, &scale_x, &scale_y);
+            }
+            ImVec2 mouse_pos((float)event->motion.x / scale_x, (float)event->motion.y / scale_y);
             io.AddMouseSourceEvent(event->motion.which == SDL_TOUCH_MOUSEID ? ImGuiMouseSource_TouchScreen : ImGuiMouseSource_Mouse);
             io.AddMousePosEvent(mouse_pos.x, mouse_pos.y);
             return true;
@@ -520,7 +525,13 @@ static void ImGui_ImplSDL2_UpdateMouseData()
             int window_x, window_y, mouse_x_global, mouse_y_global;
             SDL_GetGlobalMouseState(&mouse_x_global, &mouse_y_global);
             SDL_GetWindowPosition(bd->Window, &window_x, &window_y);
-            io.AddMousePosEvent((float)(mouse_x_global - window_x), (float)(mouse_y_global - window_y));
+
+            float scale_x = 1.0f;
+            float scale_y = 1.0f;
+            if (bd->Renderer) {
+                SDL_RenderGetScale(bd->Renderer, &scale_x, &scale_y);
+            }
+            io.AddMousePosEvent((float)(mouse_x_global - window_x) / scale_x, (float)(mouse_y_global - window_y) / scale_y);
         }
     }
 }
