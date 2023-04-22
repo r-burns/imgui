@@ -5851,7 +5851,13 @@ static void ImGui::RenderWindowOuterBorders(ImGuiWindow* window)
     float rounding = window->WindowRounding;
     float border_size = window->WindowBorderSize;
     if (border_size > 0.0f && !(window->Flags & ImGuiWindowFlags_NoBackground))
-        window->DrawList->AddRect(window->Pos, window->Pos + window->Size, GetColorU32(ImGuiCol_Border), rounding, 0, border_size);
+    {
+        // Adjustment needed for border sizes > 1
+        const auto border_adjust = (border_size - 1) / 2;
+        const auto adjust = ImVec2{border_adjust, border_adjust};
+
+        window->DrawList->AddRect(window->Pos + adjust, window->Pos + window->Size - adjust, GetColorU32(ImGuiCol_Border), rounding, 0, border_size);
+    }
 
     int border_held = window->ResizeBorderHeld;
     if (border_held != -1)
