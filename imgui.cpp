@@ -3185,6 +3185,8 @@ const char* ImGui::GetStyleColorName(ImGuiCol idx)
     case ImGuiCol_NavWindowingHighlight: return "NavWindowingHighlight";
     case ImGuiCol_NavWindowingDimBg: return "NavWindowingDimBg";
     case ImGuiCol_ModalWindowDimBg: return "ModalWindowDimBg";
+    case ImGuiCol_TitleBarBgTop: return "TitleBarBgTop";
+    case ImGuiCol_TitleBarBgBot: return "TitleBarBgBot";
     }
     IM_ASSERT(0);
     return "Unknown";
@@ -5925,7 +5927,10 @@ void ImGui::RenderWindowDecorations(ImGuiWindow* window, const ImRect& title_bar
         if (!(flags & ImGuiWindowFlags_NoTitleBar))
         {
             ImU32 title_bar_col = GetColorU32(title_bar_is_highlight ? ImGuiCol_TitleBgActive : ImGuiCol_TitleBg);
-            window->DrawList->AddRectFilled(title_bar_rect.Min, title_bar_rect.Max, title_bar_col, window_rounding, ImDrawFlags_RoundCornersTop);
+            const auto top_color = GetColorU32(ImGuiCol_TitleBarBgTop);
+            const auto bot_color = GetColorU32(ImGuiCol_TitleBarBgBot);
+            window->DrawList->AddRectFilledMultiColor(title_bar_rect.Min, title_bar_rect.Max,
+                                                      top_color, top_color, bot_color, bot_color);
         }
 
         // Menu bar
