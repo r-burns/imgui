@@ -5856,7 +5856,10 @@ static void ImGui::RenderWindowOuterBorders(ImGuiWindow* window)
         const auto border_adjust = (border_size - 1) / 2;
         const auto adjust = ImVec2{border_adjust, border_adjust};
 
-        window->DrawList->AddRect(window->Pos + adjust, window->Pos + window->Size - adjust, GetColorU32(ImGuiCol_Border), rounding, 0, border_size);
+        // Draw border around window contents only, not top window decoration
+        // Also skip a pixel to match spybot UI
+        const auto offset = ImVec2{0, window->TitleBarRect().GetSize().y + 2};
+        window->DrawList->AddRect(window->Pos + offset + adjust, window->Pos + window->Size - adjust, GetColorU32(ImGuiCol_Border), rounding, 0, border_size);
     }
 
     int border_held = window->ResizeBorderHeld;
